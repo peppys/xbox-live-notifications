@@ -1,0 +1,21 @@
+#logging.level.springfox.documentation=debug
+
+server:
+  error:
+    include-message: always
+
+spring:
+  cloud:
+    gcp:
+      firestore:
+        enabled: true
+        project-id: ${GOOGLE_PROJECT_ID:fake-project-id}
+      pubsub:
+        enabled: true
+        project-id: ${GOOGLE_PROJECT_ID:fake-project-id}
+
+xboxlivenotifications:
+  presence-changed-topic: xbox-live-presence-changed
+  subscribing-phone-number: +15555555555
+  xboxliveapi:
+    token: fake-token
