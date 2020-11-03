@@ -1,6 +1,6 @@
 package com.github.peppys.xboxlivenotifications.handlers;
 
-import com.github.peppys.xboxlivenotifications.dto.task.pubsub.PubSubSubscriptionEvent;
+import com.github.peppys.xboxlivenotifications.dto.PubSubSubscriptionEvent;
 import com.github.peppys.xboxlivenotifications.entities.PresenceChangedMessage;
 import com.github.peppys.xboxlivenotifications.services.xboxlive.XboxLivePresenceObserver;
 import lombok.extern.slf4j.Slf4j;

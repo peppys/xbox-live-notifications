@@ -1,4 +1,4 @@
-package com.github.peppys.xboxlivenotifications.dto.task.pubsub;
+package com.github.peppys.xboxlivenotifications.dto;
 
 import lombok.Builder;
 import lombok.Data;

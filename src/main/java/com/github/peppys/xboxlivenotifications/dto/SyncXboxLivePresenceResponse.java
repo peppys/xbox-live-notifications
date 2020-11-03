@@ -1,4 +1,4 @@
-package com.github.peppys.xboxlivenotifications.dto.task;
+package com.github.peppys.xboxlivenotifications.dto;
 
 import com.github.peppys.xboxlivenotifications.entities.XboxLivePresence;
 import lombok.AllArgsConstructor;

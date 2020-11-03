@@ -1,6 +1,6 @@
 package com.github.peppys.xboxlivenotifications.handlers;
 
-import com.github.peppys.xboxlivenotifications.dto.task.SyncXboxLivePresenceResponse;
+import com.github.peppys.xboxlivenotifications.dto.SyncXboxLivePresenceResponse;
 import com.github.peppys.xboxlivenotifications.services.xboxlive.XboxLivePresenceSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
