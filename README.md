@@ -6,13 +6,13 @@ Everything here is event-driven with a "push-based" design so that this service 
 
 ### Architecture
 ##### [Cloud Scheduler](https://cloud.google.com/scheduler)
-- Hits endpoint every 5 minutes: `/tasks/sync-xbox-live-presence-async`
+- Hits endpoint every 5 minutes: `/xbox-live-presences/queue-sync`
 
-##### Endpoint handler for Cloud Scheduler: `/tasks/sync-xbox-live-presence-async`
+##### Endpoint handler for Cloud Scheduler: `/xbox-live-presences/queue-sync`
 - Enqueues job to sync Xbox Live presence data for all of my friends via [Cloud Tasks](https://cloud.google.com/tasks)
-    - Queue items are processed via endpoint: `/tasks/sync-xbox-live-presence`
+    - Queue items are processed via endpoint: `/xbox-live-presences/sync`
 
-##### Endpoint handler for Cloud Tasks: `/tasks/sync-xbox-live-presence`
+##### Endpoint handler for Cloud Tasks: `/xbox-live-presences/sync`
 - Retrieves Xbox Live friend data, including presence status via https://peoplehub.xboxlive.com/users/me/people/social
 - Upserts presence records to the DB
 - If any presence status changes are detected, publish presence ID and new status via [Pub/Sub](https://cloud.google.com/pubsub)

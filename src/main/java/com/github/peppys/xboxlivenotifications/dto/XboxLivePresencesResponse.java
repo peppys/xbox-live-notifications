@@ -14,6 +14,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @Accessors(chain = true)
-public class SyncXboxLivePresenceResponse {
+public class XboxLivePresencesResponse {
     private List<XboxLivePresence> presences;
 }

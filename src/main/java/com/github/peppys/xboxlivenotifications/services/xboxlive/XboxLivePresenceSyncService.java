@@ -32,6 +32,10 @@ public class XboxLivePresenceSyncService {
         this.publisher = publisher;
     }
 
+    public Flux<XboxLivePresence> findAll() {
+        return repo.findAll();
+    }
+
     public Mono<Void> queueSync() {
         return Mono.fromRunnable(queuer);
     }
