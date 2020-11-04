@@ -37,7 +37,12 @@ public class XboxLivePresenceObserver {
                 .thenReturn(presence))
             .flatMap(presence -> sms.send(phone, String.format("%s has just logged on to Xbox Live!", presence.getGamertag()))
                 .thenReturn(presence))
-            .flatMap(presence -> repo.save(presence.setLastNotifiedAt(Date.from(Instant.now()))))
+            .flatMap(presence -> repo.save(
+                presence
+                    .setLastNotifiedAt(Date.from(Instant.now()))
+                    .setUpdatedAt(Date.from(Instant.now()))
+                )
+            )
             .then();
     }
 }

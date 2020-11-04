@@ -59,11 +59,9 @@ public class XboxLivePresenceSyncService {
                     .setState(tuple.getT1().getPresenceState())
                     .setUpdatedAt(Date.from(Instant.now()));
 
-                return Mono.when(
-                    repo.save(presence),
-                    // Publish on state changes
-                    stateChanged ? publishStateChanged(presence) : Mono.just(false)
-                )
+                return repo.save(presence)
+                    .filter((p) -> stateChanged)
+                    .flatMap(this::publishStateChanged)
                     .thenReturn(presence);
             });
     }

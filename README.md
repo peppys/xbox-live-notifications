@@ -2,6 +2,7 @@
 This fun little service texts me whenever the homies hop on Xbox Live.
 
 Xbox Live doesn't offer any webhooks or data change feeds we can integrate with, so I built something simple myself.
+Everything here is event-driven with a "push-based" design so that this service can be completely serverless, managed via [Cloud Run](https://cloud.google.com/run).
 
 ### Architecture
 ##### [Cloud Scheduler](https://cloud.google.com/scheduler)
