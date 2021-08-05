@@ -18,4 +18,7 @@ xboxlivenotifications:
   presence-changed-topic: xbox-live-presence-changed
   subscribing-phone-number: +15555555555
   xboxliveapi:
-    token: fake-token
+    oauth:
+      client-id: fake-client-id
+      client-secret: fake-client-secret
+      refresh-token: fake-refresh-token

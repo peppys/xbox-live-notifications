@@ -20,26 +20,26 @@ public class XboxLivePresenceHandler {
     @GetMapping
     public Mono<ResponseEntity<XboxLivePresencesResponse>> list() {
         return service.findAll()
-            .collectList()
-            .map(presences -> ResponseEntity.ok()
-                .body(XboxLivePresencesResponse.builder()
-                    .presences(presences)
-                    .build()));
+                .collectList()
+                .map(presences -> ResponseEntity.ok()
+                        .body(XboxLivePresencesResponse.builder()
+                                .presences(presences)
+                                .build()));
     }
 
     @PostMapping("/queue-sync")
     public Mono<ResponseEntity<Object>> queueSync() {
         return service.queueSync()
-            .thenReturn(ResponseEntity.accepted().build());
+                .thenReturn(ResponseEntity.accepted().build());
     }
 
     @PostMapping("/sync")
     public Mono<ResponseEntity<XboxLivePresencesResponse>> sync() {
         return service.sync()
-            .collectList()
-            .map(presences -> ResponseEntity.ok()
-                .body(XboxLivePresencesResponse.builder()
-                    .presences(presences)
-                    .build()));
+                .collectList()
+                .map(presences -> ResponseEntity.ok()
+                        .body(XboxLivePresencesResponse.builder()
+                                .presences(presences)
+                                .build()));
     }
 }

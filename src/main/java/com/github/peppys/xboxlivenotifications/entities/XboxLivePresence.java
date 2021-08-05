@@ -47,6 +47,12 @@ public class XboxLivePresence {
     @Setter(onMethod_ = {@PropertyName("updated_at")})
     private Date updatedAt;
 
+    @JsonProperty("last_seen_at")
+    @PropertyName("last_seen_at")
+    @Getter(onMethod_ = {@PropertyName("last_seen_at")})
+    @Setter(onMethod_ = {@PropertyName("last_seen_at")})
+    private Date lastSeenAt;
+
     @JsonProperty("last_notified_at")
     @PropertyName("last_notified_at")
     @Getter(onMethod_ = {@PropertyName("last_notified_at")})

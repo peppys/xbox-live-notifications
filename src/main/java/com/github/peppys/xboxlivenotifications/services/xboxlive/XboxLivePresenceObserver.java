@@ -19,9 +19,9 @@ public class XboxLivePresenceObserver {
     private final String phone;
 
     public XboxLivePresenceObserver(
-        final SMSService sms,
-        final XboxLivePresenceRepository repo,
-        @Value("${xboxlivenotifications.subscribing-phone-number}") final String phone) {
+            final SMSService sms,
+            final XboxLivePresenceRepository repo,
+            @Value("${xboxlivenotifications.subscribing-phone-number}") final String phone) {
         this.sms = sms;
         this.repo = repo;
         this.phone = phone;
@@ -29,20 +29,18 @@ public class XboxLivePresenceObserver {
 
     public Mono<Void> onPresenceChanged(final String id, final SocialFriendsResponse.Person.PresenceState state) {
         return Mono.just(state)
-            .filter(s -> s == SocialFriendsResponse.Person.PresenceState.Online)
-            .flatMap(s -> repo.findById(id)
-                .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format("%s does not exist", id))))
-            )
-            .flatMap(presence -> Mono.fromRunnable(() -> log.info("Notifying that {} has just become {}", presence.getGamertag(), state))
-                .thenReturn(presence))
-            .flatMap(presence -> sms.send(phone, String.format("%s has just logged on to Xbox Live!", presence.getGamertag()))
-                .thenReturn(presence))
-            .flatMap(presence -> repo.save(
-                presence
-                    .setLastNotifiedAt(Date.from(Instant.now()))
-                    .setUpdatedAt(Date.from(Instant.now()))
+                .filter(s -> s == SocialFriendsResponse.Person.PresenceState.Online)
+                .flatMap(s -> repo.findById(id)
+                        .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format("%s does not exist", id))))
                 )
-            )
-            .then();
+                .doOnNext(presence -> log.info("Notifying that {} has just become {}", presence.getGamertag(), state))
+                .doOnNext(presence -> sms.send(phone, String.format("%s has just logged on to Xbox Live!", presence.getGamertag())))
+                .flatMap(presence -> repo.save(
+                        presence
+                                .setLastNotifiedAt(Date.from(Instant.now()))
+                                .setUpdatedAt(Date.from(Instant.now()))
+                        )
+                )
+                .then();
     }
 }

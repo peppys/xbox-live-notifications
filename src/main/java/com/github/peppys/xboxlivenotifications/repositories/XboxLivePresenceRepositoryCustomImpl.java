@@ -14,7 +14,7 @@ public class XboxLivePresenceRepositoryCustomImpl implements XboxLivePresenceRep
     @Override
     public Mono<XboxLivePresence> findOrCreate(final String id, final XboxLivePresence presence) {
         return firestore
-            .findById(Mono.just(id), XboxLivePresence.class)
-            .switchIfEmpty(firestore.save(presence));
+                .findById(Mono.just(id), XboxLivePresence.class)
+                .switchIfEmpty(firestore.save(presence));
     }
 }
