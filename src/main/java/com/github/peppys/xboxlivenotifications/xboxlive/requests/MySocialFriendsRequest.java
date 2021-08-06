@@ -1,12 +1,15 @@
 package com.github.peppys.xboxlivenotifications.xboxlive.requests;
 
 import com.github.peppys.xboxlivenotifications.xboxlive.XboxLiveAPIClient;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
 
-import java.util.Collections;
-
+@Data
+@Builder
 public class MySocialFriendsRequest implements APIRequest {
     private static final HttpHeaders headers;
 
@@ -16,18 +19,17 @@ public class MySocialFriendsRequest implements APIRequest {
         headers.add(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
     }
 
-    public static MySocialFriendsRequest build() {
-        return new MySocialFriendsRequest();
-    }
+    private final boolean xboxTokenRequired = true;
 
     @Override
-    public Spec buildSpec() {
+    public Spec get() {
         return Spec.builder()
-            .method(HttpMethod.GET)
-            .headers(headers)
-            .accept(MediaType.APPLICATION_JSON)
-            .uri(String.format("%s/users/me/people/social", XboxLiveAPIClient.PEOPLE_HUB_API_BASE_URI))
-            .data(Collections.emptyMap())
-            .build();
+                .method(HttpMethod.GET)
+                .headers(headers)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .uri(String.format("%s/users/me/people/social", XboxLiveAPIClient.PEOPLE_HUB_API_BASE_URI))
+                .data(BodyInserters.empty())
+                .build();
     }
 }

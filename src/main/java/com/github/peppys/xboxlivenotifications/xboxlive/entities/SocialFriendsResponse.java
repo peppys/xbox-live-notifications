@@ -3,6 +3,7 @@ package com.github.peppys.xboxlivenotifications.xboxlive.entities;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -27,9 +28,15 @@ public class SocialFriendsResponse {
         }
 
         private String xuid;
+
         private boolean isFavorite;
+
         private String gamertag;
+
         private String realName;
+
         private PresenceState presenceState;
+
+        private Date lastSeenDateTimeUtc;
     }
 }

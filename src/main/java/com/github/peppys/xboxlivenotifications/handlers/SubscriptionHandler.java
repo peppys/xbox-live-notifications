@@ -23,6 +23,6 @@ public class SubscriptionHandler {
         var message = PresenceChangedMessage.fromBase64(body.getMessage().getData());
 
         return observer.onPresenceChanged(message.getPresenceId(), message.getNewState())
-            .thenReturn(ResponseEntity.ok().build());
+                .thenReturn(ResponseEntity.ok().build());
     }
 }
