@@ -10,15 +10,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class APIClientConfiguration {
     @Bean
     public XboxLiveAPIClient apiClient(
-            @Value("${xboxlivenotifications.xboxliveapi.oauth.client-id}") String clientId,
-            @Value("${xboxlivenotifications.xboxliveapi.oauth.client-secret}") String clientSecret,
-            @Value("${xboxlivenotifications.xboxliveapi.oauth.refresh-token}") String refreshToken
+            @Value("${xboxlivenotifications.xboxliveapi.caller.client-id}") String clientId,
+            @Value("${xboxlivenotifications.xboxliveapi.caller.client-secret}") String clientSecret,
+            @Value("${xboxlivenotifications.xboxliveapi.caller.refresh-token}") String refreshToken,
+            @Value("${xboxlivenotifications.xboxliveapi.caller.gamer-tag}") String gamerTag,
+            @Value("${xboxlivenotifications.xboxliveapi.caller.full-name}") String fullName
     ) {
         return XboxLiveAPIClient.builder()
                 .client(WebClient.create())
                 .clientId(clientId)
                 .clientSecret(clientSecret)
                 .refreshToken(refreshToken)
+                .callerGamerTag(gamerTag)
+                .callerFullName(fullName)
                 .build();
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.peppys.xboxlivenotifications.xboxlive.entities.SocialFriendsResponse;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
-import com.google.cloud.firestore.annotation.ServerTimestamp;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.cloud.gcp.data.firestore.Document;

@@ -20,7 +20,7 @@ public class SubscriptionHandler {
 
     @PostMapping("/xbox-live-status-changed")
     public Mono<ResponseEntity<Object>> statusChanged(@RequestBody PubSubSubscriptionEvent body) {
-        var message = PresenceChangedMessage.fromBase64(body.getMessage().getData());
+        final var message = PresenceChangedMessage.fromBase64(body.getMessage().getData());
 
         return observer.onPresenceChanged(message.getPresenceId(), message.getNewState())
                 .thenReturn(ResponseEntity.ok().build());

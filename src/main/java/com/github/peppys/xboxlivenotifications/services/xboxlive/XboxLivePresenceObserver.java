@@ -34,7 +34,8 @@ public class XboxLivePresenceObserver {
                         .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format("%s does not exist", id))))
                 )
                 .doOnNext(presence -> log.info("Notifying that {} has just become {}", presence.getGamertag(), state))
-                .doOnNext(presence -> sms.send(phone, String.format("%s has just logged on to Xbox Live!", presence.getGamertag())))
+                .flatMap(presence -> sms.send(phone, String.format("%s has just logged on to Xbox Live!", presence.getGamertag()))
+                        .thenReturn(presence))
                 .flatMap(presence -> repo.save(
                         presence
                                 .setLastNotifiedAt(Date.from(Instant.now()))
