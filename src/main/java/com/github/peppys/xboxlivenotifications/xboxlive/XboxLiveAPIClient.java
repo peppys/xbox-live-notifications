@@ -9,6 +9,7 @@ import com.github.peppys.xboxlivenotifications.xboxlive.requests.UserTokenReques
 import com.github.peppys.xboxlivenotifications.xboxlive.requests.XboxTokenRequest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Builder;
+import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -19,10 +20,13 @@ import java.util.Optional;
 
 @Slf4j
 @Builder
+@Data
 public class XboxLiveAPIClient {
     public static final String HEADER_XBL_CONTRACT_VERSION = "x-xbl-contract-version";
 
     public static final String PEOPLE_HUB_API_BASE_URI = "https://peoplehub.xboxlive.com";
+
+    public static final String USER_PRESENCE_API_BASE_URI = "https://userpresence.xboxlive.com";
 
     private final WebClient client;
 
@@ -31,6 +35,10 @@ public class XboxLiveAPIClient {
     private final String clientSecret;
 
     private final String refreshToken;
+
+    private final String callerGamerTag;
+
+    private final String callerFullName;
 
     private final Mono<String> authToken = Mono.fromSupplier(this::fetchAuthorizationToken)
             .flatMap(mono -> mono)
@@ -54,7 +62,7 @@ public class XboxLiveAPIClient {
     }
 
     private <T> Mono<T> send(final APIRequest request, final Class<T> responseClass, HttpHeaders headers) {
-        var spec = request.get();
+        final var spec = request.get();
         log.info("Sending request: {}", request.getClass().getSimpleName());
 
         return client

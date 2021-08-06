@@ -4,7 +4,9 @@ import com.github.peppys.xboxlivenotifications.entities.PresenceChangedMessage;
 import com.github.peppys.xboxlivenotifications.entities.XboxLivePresence;
 import com.github.peppys.xboxlivenotifications.repositories.XboxLivePresenceRepository;
 import com.github.peppys.xboxlivenotifications.xboxlive.XboxLiveAPIClient;
+import com.github.peppys.xboxlivenotifications.xboxlive.entities.MyPresenceResponse;
 import com.github.peppys.xboxlivenotifications.xboxlive.entities.SocialFriendsResponse;
+import com.github.peppys.xboxlivenotifications.xboxlive.requests.MyPresenceRequest;
 import com.github.peppys.xboxlivenotifications.xboxlive.requests.MySocialFriendsRequest;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -41,11 +43,9 @@ public class XboxLivePresenceSyncService {
     }
 
     public Flux<XboxLivePresence> sync() {
-        return xboxLive.send(MySocialFriendsRequest.builder().build(), SocialFriendsResponse.class)
-                .onErrorMap(e -> new RuntimeException("Unexpected error while querying for xbox friends: " + e.getMessage(), e))
-                .flatMapMany(socialFriendsResponse -> Flux.fromIterable(socialFriendsResponse.getPeople()))
+        return findAllXboxProfiles()
                 // Find or create in DB
-                .flatMap(person -> Flux.zip(Flux.just(person), repo.findOrCreate(person.getXuid(), XboxLivePresence.builder()
+                .flatMap(person -> repo.findOrCreate(person.getXuid(), XboxLivePresence.builder()
                         .id(person.getXuid())
                         .state(person.getPresenceState())
                         .fullName(person.getRealName())
@@ -53,16 +53,17 @@ public class XboxLivePresenceSyncService {
                         .lastSeenAt(person.getLastSeenDateTimeUtc())
                         .createdAt(Date.from(Instant.now()))
                         .updatedAt(Date.from(Instant.now()))
-                        .build())))
+                        .build())
+                        .zipWith(Mono.just(person))
+                )
                 // Update presence state in DB
                 .flatMap(tuple -> {
-                    var person = tuple.getT1();
-                    var presence = tuple.getT2();
-
-                    var stateChanged = person.getPresenceState() != presence.getState();
+                    final var presence = tuple.getT1();
+                    final var person = tuple.getT2();
+                    final var stateChanged = person.getPresenceState() != presence.getState();
 
                     presence
-                            .setState(tuple.getT1().getPresenceState())
+                            .setState(person.getPresenceState())
                             .setUpdatedAt(Date.from(Instant.now()))
                             .setLastSeenAt(person.getLastSeenDateTimeUtc());
 
@@ -81,5 +82,26 @@ public class XboxLivePresenceSyncService {
                 .newState(presence.getState())
                 .build()
         ));
+    }
+
+    private Flux<SocialFriendsResponse.Person> findAllXboxProfiles() {
+        return Mono.zip(
+                xboxLive.send(MySocialFriendsRequest.builder().build(), SocialFriendsResponse.class),
+                xboxLive.send(MyPresenceRequest.builder().build(), MyPresenceResponse.class)
+                        .map(r -> SocialFriendsResponse.Person.builder()
+                                .xuid(r.getXuid())
+                                .gamertag(xboxLive.getCallerGamerTag())
+                                .realName(xboxLive.getCallerFullName())
+                                .presenceState(r.getState())
+                                .lastSeenDateTimeUtc(r.getLastSeen().getTimestamp())
+                                .build())
+        )
+                .onErrorMap(e -> new RuntimeException("Unexpected error while querying for xbox friends: " + e.getMessage(), e))
+                // Combine caller with friends list
+                .flatMapMany(tuple -> {
+                    final var people = tuple.getT1().getPeople();
+                    people.add(tuple.getT2());
+                    return Flux.fromIterable(people);
+                });
     }
 }
